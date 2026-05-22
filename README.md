@@ -23,7 +23,7 @@ config.yaml                      # model, temperature, system prompt
 2. **Virtual environment** (optional but recommended):
 
    ```bash
-   cd /Users/Desktop/Interview_Task/ITaskRag
+   cd /yourpathlocation
    python3 -m venv .venv
    source .venv/bin/activate
    pip install -r requirements.txt
