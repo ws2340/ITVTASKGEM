@@ -1,0 +1,16 @@
+{
+  "document_id": "doc_001",
+  "tables": [
+    {
+      "table_id": 1,
+      "page_start": 2,
+      "page_end": 2,
+      "title": "Transaction Summary",
+      "columns": ["Date", "Description", "Debit", "Credit", "Balance"],
+      "rows": [
+        ["2025-01-05", "Opening Balance", "", "", "5000.00"],
+        ["2025-01-06", "ATM Withdrawal", "200.00", "", "4800.00"]
+      ]
+    }
+  ]
+}

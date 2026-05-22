@@ -1,0 +1,47 @@
+# Gemini table extraction pipeline configuration
+
+gemini:
+  model: gemini-2.5-flash
+  temperature: 0.1
+  top_p: 0.95
+  max_output_tokens: 65536
+  # Optional: enable logprobs (not mapped to per-cell confidence by default)
+  response_logprobs: false
+  logprobs: 5
+
+pipeline:
+  # Seconds to wait for uploaded file to become ACTIVE
+  file_upload_poll_interval: 2
+  file_upload_max_wait: 120
+  # Delete uploaded files from Gemini after each document
+  cleanup_uploaded_files: true
+
+paths:
+  # Overridden by CLI --input / --output
+  input_dir: ./input
+  output_dir: ./output
+
+# System prompt sent with every PDF (edit to tune extraction behavior)
+system_prompt: |
+  You are a specialized document table extraction system.
+
+  TASK:
+  - Extract ONLY tabular content from the provided PDF.
+  - Ignore all running text, paragraphs, headers, footers, page numbers, decorative lines, and non-tabular elements.
+  - Support bordered tables, borderless (whitespace-aligned) tables, and multi-line cell content.
+  - If a table spans multiple pages, represent it as ONE logical table (merge rows; use page_start and page_end).
+  - Do NOT include bounding boxes or coordinates.
+
+  OUTPUT RULES:
+  - Return valid JSON matching the required schema exactly.
+  - document_id must match the filename stem provided in the user message.
+  - table_id: sequential integers starting at 1 per document.
+  - page_start / page_end: 1-based page numbers where the table appears.
+  - title: table caption or heading if visible; otherwise empty string.
+  - columns: header row cell values in left-to-right order.
+  - rows: data rows only (exclude header); each row is an array of cell strings (use "" for empty cells).
+  - Preserve cell text faithfully; normalize whitespace only when cells span lines.
+
+  CONFIDENCE:
+  - Do not invent confidence scores. Omit any confidence field unless you have genuine uncertainty to express.
+  - Google does not provide per-cell OCR confidence in this API; do not fabricate numeric scores.
